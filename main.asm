@@ -1226,6 +1226,33 @@ ScoreSound:
 	li $v0, 31
 	syscall
 	j  NewRound
+	
+VictorySound:
+    # Note 1
+    li $a0, 72        # C5
+    li $a1, 250       # duration
+    li $a2, 56        # trumpet
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    # Note 2
+    li $a0, 79        # G5
+    li $a1, 250
+    li $a2, 56
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    # Note 3
+    li $a0, 84        # C6 (higher)
+    li $a1, 400
+    li $a2, 56
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    jr $ra
     
 # Display winner and wait for reset
 GameOver:
@@ -1249,6 +1276,7 @@ Winner1:
     li $a1, 16
     li $a3, 35
     jal HorizontalLine
+    jal VictorySound
     j  WinnerP
         
 Winner2:    
@@ -1279,6 +1307,9 @@ Winner2:
 
     li $a0, 33
     jal Pixel
+    
+    jal VictorySound
+    j  WinnerP
         
 WinnerP:    
     li $a0, 27
