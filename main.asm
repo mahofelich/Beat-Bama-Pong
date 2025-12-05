@@ -8,37 +8,524 @@
 #Base address for display  ---> 0x10008000 ($gp)
 
     xDir:           .word 1      # ball horizontal direction (1=right, -1=left)
-    ySpeed:         .word -1     # frames before ball moves vertically
-    yDir:           .word -1     # ball vertical direction (1=down, -1=up)
-    p1Score:        .word 0
-    p2Score:        .word 0
-    aiCounter:      .word 0
-    aiSpeed:        .word 0      # AI reaction speed (set after first paddle hit)
-    difficulty:     .word 6
-    color1:         .word 0x000C2340   # Auburn navy
-    color2:         .word 0x00DC143C   # Alabama crimson
-    ballColor:      .word 0x895959
-    bgColor:        .word 0x4CA450     # field green
-    titleBG:        .word 0x00000000   # black background for title / startup
-    accentColor:    .word 0x00ffffff   # white
-    gameMode:       .word 0           # 1=single player, 2=two player
-    paddleHeight:   .word 10          # default paddle height
-    ballFrameSkip:  .word 1           # used to slow ball in 2P mode
-    soundCooldown:  .word 0           # frames until sound can play again
+	ySpeed:         .word -1     # frames before ball moves vertically
+	yDir:           .word -1     # ball vertical direction (1=down, -1=up)
+	p1Score:        .word 0
+	p2Score:        .word 0
+	aiCounter:      .word 0
+	aiSpeed:        .word 0      # AI reaction speed (set after first paddle hit)
+	difficulty:     .word 6
+	color1:         .word 0x000C2340   # Auburn navy
+	color2:         .word 0x00DC143C   # Alabama crimson
+	ballColor:      .word 0x895959
+	bgColor:        .word 0x4CA450     # field green
+	titleBG:        .word 0x000A5F0A   # title
+	accentColor:    .word 0x00ffffff   # white
+	gameMode:       .word 0           # 1=single player, 2=two player
+	white:          .word 0x00ffffff
+	orange:         .word 0x00E87722 
+	yellow:         .word 0x00FFFF00
+    	paddleHeight:   .word 10          # default paddle height
+   	ballFrameSkip:  .word 1           # used to slow ball in 2P mode
 
 .text
 
-######################
-# "TITLE" / START SCREEN (BLANK FOR NOW)
-######################
 NewGame:
-    # Just clear to black and wait for mode select.
-    # Real title graphics will be added later.
-    lw  $a0, titleBG
-    jal ClearScreen
+	lw  $a0, titleBG 
+	jal ClearScreen
 
-    j  SelectMode
+	#Football 
+	Lines:
+	#Blue line
+		li $a0, 0
+		li $a1, 13 
+		lw $a2, orange
+		li $a3, 70
+		jal HorizontalLine
+		
+		li $a1, 14
+		jal HorizontalLine
+		
+		li $a0, 0
+		li $a1, 15
+		lw $a2, accentColor
+		li $a3, 70
+		jal HorizontalLine
+		
+		li $a1, 16 
+		jal HorizontalLine
+		
+		li $a0, 0
+		li $a1, 17
+		lw $a2, color1
+		li $a3, 63
+		jal HorizontalLine
+		
+		li $a1, 18
+		jal HorizontalLine
+		
+FieldGoals: 
+#feild goal 1
+	li $a0, 2
+	li $a1, 6
+	lw $a2, yellow
+	li $a3, 8
+	jal HorizontalLine
+	
+	li $a0, 2
+	li $a1, 1
+	lw $a2, yellow
+	li $a3, 5
+	jal VerticalLine
+	
+	li $a0, 8
+	li $a1, 1
+	lw $a2, yellow
+	li $a3, 5
+	jal VerticalLine
+	
+	li $a0, 5
+	li $a1, 6
+	lw $a2, yellow
+	li $a3, 10
+	jal VerticalLine
+	
+	
+#field goal 2	
+	li $a0, 52
+	li $a1, 6
+	lw $a2, yellow
+	li $a3, 58
+	jal HorizontalLine
+		
+	li $a0, 52
+	li $a1, 1
+	lw $a2, yellow
+	li $a3, 5
+	jal VerticalLine
+	
+	li $a0, 58
+	li $a1, 1
+	lw $a2, yellow
+	li $a3, 5
+	jal VerticalLine
+		
+	li $a0, 55
+	li $a1, 6
+	lw $a2, yellow
+	li $a3, 10
+	jal VerticalLine	
+	# Draw "PONG" title
+	# Replace the DrawTitle section with this code:
 
+DrawTitle: # Beat Bama
+
+#a0 = left to right
+#a1 = up and down
+
+	# Draw "B" 
+	li $a0, 12
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a1, 5
+	li $a3, 13
+	jal HorizontalLine
+	
+	li $a1, 7
+	li $a3, 14
+	jal HorizontalLine
+	
+	li $a1, 9
+	li $a3, 13
+	jal HorizontalLine
+	
+	li $a0, 14
+	li $a1, 6
+	jal Pixel
+	
+	li $a1, 8
+	jal Pixel
+	
+	#E
+	li $a0, 16
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 17
+	li $a1, 9
+	jal Pixel
+	
+	li $a0, 18
+	li $a1, 9
+	jal Pixel
+	
+	li $a0, 17
+	li $a1, 7
+	jal Pixel
+	
+	li $a0, 17
+	li $a1, 5
+	jal Pixel
+	li $a0, 18
+	li $a1, 5
+	jal Pixel
+	
+	#A
+	li $a0, 20
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 22
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 21
+	li $a1, 7
+	jal Pixel
+	li $a0, 21
+	li $a1, 5
+	jal Pixel
+	
+	#T
+	li $a0, 25
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 24
+	li $a1, 5
+	jal Pixel
+	li $a0, 26
+	li $a1, 5
+	jal Pixel
+	
+	#B (for bama)
+	li $a0, 31
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 32
+	li $a1, 5
+	jal Pixel
+	li $a0, 33
+	li $a1, 6
+	jal Pixel
+	li $a0, 33
+	li $a1, 7
+	jal Pixel
+	li $a0, 32
+	li $a1, 7
+	jal Pixel
+	li $a0, 33
+	li $a1, 8
+	jal Pixel
+	li $a0, 32
+	li $a1, 9
+	jal Pixel
+	
+	#A
+	li $a0, 35
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 36
+	li $a1, 5
+	jal Pixel
+	li $a0, 36
+	li $a1, 7
+	jal Pixel
+	
+	li $a0, 37
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	#M
+	li $a0, 39
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 40
+	li $a1, 6
+	jal Pixel
+	li $a0, 41
+	li $a1, 7
+	jal Pixel
+	li $a0, 42
+	li $a1, 6
+	jal Pixel
+	
+	li $a0, 43
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	#A
+	li $a0, 45
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	li $a0, 46
+	li $a1, 5
+	jal Pixel
+	li $a0, 46
+	li $a1, 7
+	jal Pixel
+	
+	li $a0, 47
+	li $a1, 5
+	lw $a2, white
+	li $a3, 9
+	jal VerticalLine
+	
+	#1-Main 2-Catch
+	DrawInstructions:
+          #1 
+	li $a0, 3
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	#"-"
+	li $a0, 5
+	li $a1, 26
+	jal Pixel
+        li $a0, 6
+	li $a1, 26
+	jal Pixel
+
+	#M (for Main)
+	li $a0, 8
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	li $a0, 9
+	li $a1, 25
+	jal Pixel
+	li $a0, 10
+	li $a1, 26
+	jal Pixel
+	li $a0, 11
+	li $a1, 25
+	jal Pixel
+	
+	li $a0, 12
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	#A
+	li $a0, 14
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 15
+	li $a1, 24
+	jal Pixel
+	li $a0, 15
+	li $a1, 26
+	jal Pixel
+	
+	li $a0, 16
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	#I
+	li $a0, 18
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	#N
+	li $a0, 20
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 21
+	li $a1, 25
+	jal Pixel
+	li $a0, 22
+	li $a1, 26
+	jal Pixel
+	
+	li $a0, 23
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	#2
+	li $a0, 34
+	li $a1, 24
+	jal Pixel
+	li $a0, 35
+	li $a1, 24
+	jal Pixel
+	li $a0, 36
+	li $a1, 24
+	jal Pixel
+	
+	li $a0, 36
+	li $a1, 25
+	jal Pixel
+	
+	li $a0, 34
+	li $a1, 26
+	jal Pixel
+	li $a0, 35
+	li $a1, 26
+	jal Pixel
+	li $a0, 36
+	li $a1, 26
+	jal Pixel
+	
+	li $a0, 34
+	li $a1, 27
+	jal Pixel
+	
+	li $a0, 34
+	li $a1, 28
+	jal Pixel
+	li $a0, 35
+	li $a1, 28
+	jal Pixel
+	li $a0, 36
+	li $a1, 28
+	jal Pixel
+	
+	# "-"
+	li $a0, 38
+	li $a1, 26
+	jal Pixel
+	li $a0, 39
+	li $a1, 26
+	jal Pixel
+	
+	# C (for catch)
+	li $a0, 41
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 42
+	li $a1, 28
+	jal Pixel
+	li $a0, 43
+	li $a1, 28
+	jal Pixel
+	
+	li $a0, 42
+	li $a1, 24
+	jal Pixel
+	li $a0, 43
+	li $a1, 24
+	jal Pixel
+	
+	# A
+	li $a0, 45
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 46
+	li $a1, 24
+	jal Pixel
+	li $a0, 46
+	li $a1, 26
+	jal Pixel
+	
+	li $a0, 47
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	# T
+	li $a0, 50
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 49
+	li $a1, 24
+	jal Pixel
+	li $a0, 51
+	li $a1, 24
+	jal Pixel
+	
+	# C
+	li $a0, 53
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+	li $a0, 54
+	li $a1, 24
+	jal Pixel
+	li $a0, 55
+	li $a1, 24
+	jal Pixel
+	
+	li $a0, 54
+	li $a1, 28
+	jal Pixel
+	li $a0, 55
+	li $a1, 28
+	jal Pixel
+	
+	# H
+	li $a0, 57
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+	
+	li $a0, 58
+	li $a1, 26
+	jal Pixel
+	
+	li $a0, 59
+	li $a1, 24
+	lw $a2, white
+	li $a3, 28
+	jal VerticalLine
+
+        
 # Wait for player to select game mode
 SelectMode:
     lw $t1, 0xFFFF0004        # check which key was pressed
@@ -108,9 +595,6 @@ DoneSetPaddle:
     li  $t2, 1                # reset ball frame skip counter
     sw  $t2, ballFrameSkip
 
-    # reset sound cooldown at start of round
-    sw  $zero, soundCooldown
-
     lw $a0, bgColor
     jal ClearScreen
 
@@ -145,25 +629,13 @@ DoneSetPaddle:
 # MAIN GAME LOOP
 ######################
 GameLoop:
-    # tiny delay so UI/MMIO doesn't starve
-    li  $a0, 1
-    li  $v0, 32
-    syscall
-
-    # sound cooldown tick (once per frame)
-    lw  $t9, soundCooldown
-    beq $t9, $zero, NoSoundCdDec
-    addi $t9, $t9, -1
-    sw  $t9, soundCooldown
-NoSoundCdDec:
-
-    # In 2-player mode, only move the ball every 2 frames (slower ball)
+    # In 2-player mode, only move the ball every 2 frames
     lw  $t0, gameMode
     bne $t0, 2, DoBallNow      # if not 2P, normal speed
 
     lw   $t1, ballFrameSkip
     addi $t1, $t1, -1
-    sw   $t1, ballFrameSkip    # store decremented value
+    sw   $t1, ballFrameSkip    # <<< store decremented value
     bgtz $t1, SkipBall         # if still > 0, skip moving ball
     li   $t1, 2                # reset counter: move ball every 2 frames
     sw   $t1, ballFrameSkip
@@ -219,6 +691,7 @@ UpdatePlayer2:
     move $s5, $a1
     move $s1, $a3
         
+        
 ######################
 # INPUT HANDLING
 ######################
@@ -270,7 +743,8 @@ MoveUp:
     addi $sp, $sp, 4
 
     move $a1, $t1          # restore y
-    move $a2, $t2          # restore paddle color           
+    move $a2, $t2          # restore paddle color
+           
     # move up (if not at top)
     beq $a1, 0, NoMove
     addi $a1, $a1, -1
@@ -288,7 +762,8 @@ MoveDown:
     lw   $ra, 0($sp)
     addi $sp, $sp, 4
 
-    move $a2, $t1          # restore paddle color           
+    move $a2, $t1          # restore paddle color
+           
     # move down (if not at bottom)
     # screen 0–31, last top = 32 - paddleHeight
     lw  $t0, paddleHeight
@@ -520,6 +995,7 @@ GF_SetAccent:
 GF_Done:
     jr  $ra
 
+
 ######################
 # INPUT KEYS
 ######################
@@ -568,6 +1044,7 @@ CheckLeftPaddle:
     sub  $t3, $s7, $s4
 
     # scale hit position to 0..5 regardless of paddleHeight
+    # t2 = t3 * 6
     lw   $t0, paddleHeight      # t0 = paddleHeight
     li   $t1, 6
     mul  $t2, $t3, $t1          # t2 = t3 * 6
@@ -603,6 +1080,14 @@ CheckWalls:
     bne $s7, 0,  NoBounce
         
 WallHit: 
+    # (placeholder for sound)
+    addi $sp, $sp, -8
+    sw   $a0, 0($sp)
+    sw   $a1, 4($sp)
+    lw   $a0, 0($sp)
+    lw   $a1, 4($sp)
+    addi $sp, $sp, 8
+           
     # flip y direction
     bgt $s3, 1, NoBounce
     lw  $t4, yDir
@@ -614,15 +1099,12 @@ NoBounce:
     jr $ra
         
 PaddleHit: 
-    # play hit sound only if cooldown is 0
-    lw   $t9, soundCooldown
-    bgtz $t9, SkipHitSound
-
+    # play hit sound
     addi $sp, $sp, -8
     sw   $a0, 0($sp)
     sw   $a1, 4($sp)
     li   $a0, 80
-    li   $a1, 60        # shorter duration
+    li   $a1, 80
     li   $a2, 32
     li   $a3, 127
     li   $v0, 31
@@ -630,11 +1112,7 @@ PaddleHit:
     lw   $a0, 0($sp)
     lw   $a1, 4($sp)
     addi $sp, $sp, 8
-
-    li   $t9, 3         # lock sounds for ~3 frames
-    sw   $t9, soundCooldown
-
-SkipHitSound:
+        
     # set AI speed after first hit
     lw $t4, difficulty
     sw $t4, aiSpeed
@@ -731,21 +1209,12 @@ P2Loses:
     beq  $t1, 10, GameOver
 
 ScoreSound:
-    # only beep if cooldown is 0
-    lw   $t9, soundCooldown
-    bgtz $t9, NoScoreSound
-
     li $a0, 80
-    li $a1, 150       # shorter, lighter sound
-    li $a2, 80
+    li $a1, 300
+    li $a2, 121
     li $a3, 127
     li $v0, 31
     syscall
-
-    li  $t9, 8        # longer cooldown after score
-    sw  $t9, soundCooldown
-
-NoScoreSound:
     j  NewRound
     
 # Display winner and wait for reset
@@ -807,9 +1276,35 @@ WinnerP:
     li $a3, 16
     jal VerticalLine
 
-    # simple reset: wait and go back to NewGame
-WaitReset:
-    li $a0, 500
+    li $a0, 30
+    li $a3, 14
+    jal VerticalLine
+
+    li $a0, 28
+    li $a3, 29
+    jal HorizontalLine
+
+    li $a1, 14
+    jal HorizontalLine
+
+    li $a0, 100
     li $v0, 32
     syscall
-    j NewGame
+    sw $zero, 0xFFFF0000
+
+WaitReset:        
+    li $a0, 10
+    li $v0, 32
+    syscall
+    lw $t0, 0xFFFF0000
+    beq $t0, $zero, WaitReset
+    j  ResetGame
+        
+ResetGame:        
+    sw $zero, p1Score
+    sw $zero, p2Score
+    sw $zero, 0xFFFF0000
+    sw $zero, 0xFFFF0004
+    lw $a0, bgColor
+    jal ClearScreen
+    j  NewGame
