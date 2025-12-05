@@ -14,7 +14,7 @@
 	p2Score:        .word 0
 	aiCounter:      .word 0
 	aiSpeed:        .word 0      # AI reaction speed (set after first paddle hit)
-	difficulty:     .word 6
+	difficulty:     .word 4
 	color1:         .word 0x000C2340   # Auburn navy
 	color2:         .word 0x00DC143C   # Alabama crimson
 	ballColor:      .word 0x895959
@@ -1226,14 +1226,23 @@ ScoreSound:
 	li $v0, 31
 	syscall
 	j  NewRound
+	
     
 # Display winner and wait for reset
 GameOver:
     lw $a0, bgColor
     jal ClearScreen
-        
+
+    # Check if Player 1 won
     lw $t0, p1Score
-    bne $t0, 10, Winner2
+    beq $t0, 5, Winner1
+
+    # Check if Player 2 won
+    lw $t1, p2Score
+    beq $t1, 5, Winner2
+
+    # (fallback – shouldn't ever hit)
+    j Winner2
         
 Winner1:    
     li $a0, 34
@@ -1249,6 +1258,7 @@ Winner1:
     li $a1, 16
     li $a3, 35
     jal HorizontalLine
+   
     j  WinnerP
         
 Winner2:    
@@ -1279,6 +1289,9 @@ Winner2:
 
     li $a0, 33
     jal Pixel
+    
+    
+    j  WinnerP
         
 WinnerP:    
     li $a0, 27
