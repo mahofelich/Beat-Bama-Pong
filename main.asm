@@ -1097,50 +1097,66 @@ PaddleHit:
     sw $t4, aiSpeed
         
     # adjust angle based on hit position
-    beq $t3, 0, AngleSteep
-    beq $t3, 1, AngleMedium
-    beq $t3, 2, AngleShallow
-    beq $t3, 3, AngleShallow2
-    beq $t3, 4, AngleMedium2
-    beq $t3, 5, AngleSteep2
+    beq $t3, 0, HighAngle
+    beq $t3, 1, MediumAngle
+    beq $t3, 2, ShallowAngle
+    beq $t3, 3, ShallowAngle2
+    beq $t3, 4, MediumAngle2
+    beq $t3, 5, HighAngle2
+    beq $t3, 6, SteepAngle      
+    beq $t3, 7, SteeperAngle
         
-AngleSteep:
+HighAngle:
     li $s3, 1
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleMedium:
+MediumAngle:
     li $s3, 2
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleShallow:
+ShallowAngle:
     li $s3, 4
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleShallow2:
+ShallowAngle2:
     li $s3, 4
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
     j  CheckWalls
 
-AngleMedium2:
+MediumAngle2:
     li $s3, 2
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
     j  CheckWalls
 
-AngleSteep2:
+HighAngle2:
     li $s3, 1
+    sw $s3, ySpeed
+    li $s3, 1
+    sw $s3, yDir
+    j  CheckWalls
+    
+SteepAngle:
+    li $s3, 3
+    sw $s3, ySpeed
+    li $s3, 1
+    sw $s3, yDir
+    j  CheckWalls
+
+SteeperAngle:
+    li $s3, 1             
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
