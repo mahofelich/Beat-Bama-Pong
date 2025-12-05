@@ -637,7 +637,7 @@ GameLoop:
     addi $t1, $t1, -1
     sw   $t1, ballFrameSkip    # <<< store decremented value
     bgtz $t1, SkipBall         # if still > 0, skip moving ball
-    li   $t1, 2                # reset counter: move ball every 2 frames
+    li   $t1, 1               # reset counter: move ball every 2 frames
     sw   $t1, ballFrameSkip
 
 DoBallNow:
@@ -1097,50 +1097,66 @@ PaddleHit:
     sw $t4, aiSpeed
         
     # adjust angle based on hit position
-    beq $t3, 0, AngleSteep
-    beq $t3, 1, AngleMedium
-    beq $t3, 2, AngleShallow
-    beq $t3, 3, AngleShallow2
-    beq $t3, 4, AngleMedium2
-    beq $t3, 5, AngleSteep2
+    beq $t3, 0, HighAngle
+    beq $t3, 1, MediumAngle
+    beq $t3, 2, ShallowAngle
+    beq $t3, 3, ShallowAngle2
+    beq $t3, 4, MediumAngle2
+    beq $t3, 5, HighAngle2
+    beq $t3, 6, SteepAngle      
+    beq $t3, 7, SteeperAngle
         
-AngleSteep:
+HighAngle:
     li $s3, 1
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleMedium:
+MediumAngle:
     li $s3, 2
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleShallow:
+ShallowAngle:
     li $s3, 4
     sw $s3, ySpeed
     li $s3, -1
     sw $s3, yDir
     j  CheckWalls
 
-AngleShallow2:
+ShallowAngle2:
     li $s3, 4
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
     j  CheckWalls
 
-AngleMedium2:
+MediumAngle2:
     li $s3, 2
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
     j  CheckWalls
 
-AngleSteep2:
+HighAngle2:
     li $s3, 1
+    sw $s3, ySpeed
+    li $s3, 1
+    sw $s3, yDir
+    j  CheckWalls
+    
+SteepAngle:
+    li $s3, 3
+    sw $s3, ySpeed
+    li $s3, 1
+    sw $s3, yDir
+    j  CheckWalls
+
+SteeperAngle:
+    li $s3, 1             
     sw $s3, ySpeed
     li $s3, 1
     sw $s3, yDir
@@ -1174,7 +1190,7 @@ P1Loses:
     sw   $t2, xDir
     li   $a3, 54
     sw   $zero, 0xFFFF0004
-    beq  $t1, 10, GameOver
+    beq  $t1, 5, GameOver
     j    ScoreSound
         
 P2Loses:    
@@ -1185,7 +1201,7 @@ P2Loses:
     sw   $t2, xDir
     li   $a3, 1
     sw   $zero, 0xFFFF0004
-    beq  $t1, 10, GameOver
+    beq  $t1, 5, GameOver
 
 ScoreSound:
    # Multi-note celebration (like a touchdown horn)
@@ -1210,6 +1226,33 @@ ScoreSound:
 	li $v0, 31
 	syscall
 	j  NewRound
+	
+VictorySound:
+    # Note 1
+    li $a0, 72        # C5
+    li $a1, 250       # duration
+    li $a2, 56        # trumpet
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    # Note 2
+    li $a0, 79        # G5
+    li $a1, 250
+    li $a2, 56
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    # Note 3
+    li $a0, 84        # C6 (higher)
+    li $a1, 400
+    li $a2, 56
+    li $a3, 127
+    li $v0, 31
+    syscall
+
+    jr $ra
     
 # Display winner and wait for reset
 GameOver:
@@ -1233,6 +1276,7 @@ Winner1:
     li $a1, 16
     li $a3, 35
     jal HorizontalLine
+    jal VictorySound
     j  WinnerP
         
 Winner2:    
@@ -1263,6 +1307,9 @@ Winner2:
 
     li $a0, 33
     jal Pixel
+    
+    jal VictorySound
+    j  WinnerP
         
 WinnerP:    
     li $a0, 27
