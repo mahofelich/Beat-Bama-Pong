@@ -1079,15 +1079,7 @@ CheckWalls:
     beq $s7, 31, WallHit
     bne $s7, 0,  NoBounce
         
-WallHit: 
-    # (placeholder for sound)
-    addi $sp, $sp, -8
-    sw   $a0, 0($sp)
-    sw   $a1, 4($sp)
-    lw   $a0, 0($sp)
-    lw   $a1, 4($sp)
-    addi $sp, $sp, 8
-           
+WallHit:      
     # flip y direction
     bgt $s3, 1, NoBounce
     lw  $t4, yDir
@@ -1099,19 +1091,6 @@ NoBounce:
     jr $ra
         
 PaddleHit: 
-    # play hit sound
-    addi $sp, $sp, -8
-    sw   $a0, 0($sp)
-    sw   $a1, 4($sp)
-    li   $a0, 80
-    li   $a1, 80
-    li   $a2, 32
-    li   $a3, 127
-    li   $v0, 31
-    syscall
-    lw   $a0, 0($sp)
-    lw   $a1, 4($sp)
-    addi $sp, $sp, 8
         
     # set AI speed after first hit
     lw $t4, difficulty
@@ -1209,13 +1188,28 @@ P2Loses:
     beq  $t1, 10, GameOver
 
 ScoreSound:
-    li $a0, 80
-    li $a1, 300
-    li $a2, 121
-    li $a3, 127
-    li $v0, 31
-    syscall
-    j  NewRound
+   # Multi-note celebration (like a touchdown horn)
+	li $a0, 60
+	li $a1, 300
+	li $a2, 56              # Trumpet
+	li $a3, 127
+	li $v0, 31
+	syscall
+	
+	li $a0, 64              # Second note (chord)
+	li $a1, 300
+	li $a2, 56
+	li $a3, 127
+	li $v0, 31
+	syscall
+	
+	li $a0, 67              # Third note
+	li $a1, 300
+	li $a2, 56
+	li $a3, 127
+	li $v0, 31
+	syscall
+	j  NewRound
     
 # Display winner and wait for reset
 GameOver:
