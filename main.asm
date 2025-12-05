@@ -637,7 +637,7 @@ GameLoop:
     addi $t1, $t1, -1
     sw   $t1, ballFrameSkip    # <<< store decremented value
     bgtz $t1, SkipBall         # if still > 0, skip moving ball
-    li   $t1, 2                # reset counter: move ball every 2 frames
+    li   $t1, 1               # reset counter: move ball every 2 frames
     sw   $t1, ballFrameSkip
 
 DoBallNow:
@@ -1190,7 +1190,7 @@ P1Loses:
     sw   $t2, xDir
     li   $a3, 54
     sw   $zero, 0xFFFF0004
-    beq  $t1, 10, GameOver
+    beq  $t1, 5, GameOver
     j    ScoreSound
         
 P2Loses:    
@@ -1201,7 +1201,7 @@ P2Loses:
     sw   $t2, xDir
     li   $a3, 1
     sw   $zero, 0xFFFF0004
-    beq  $t1, 10, GameOver
+    beq  $t1, 5, GameOver
 
 ScoreSound:
    # Multi-note celebration (like a touchdown horn)
